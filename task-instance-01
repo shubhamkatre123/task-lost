@@ -1,0 +1,53 @@
+Steps:-   Take SSH of an EC2 instance whose key is Lost.
+            1) Launch 1'st Instances --> Name:- old-instance
+                                         Create key name:- lost-key
+                                         By default setting allow SSH and HTTP.
+                                         Launch instance --> Stopped it.
+                                    
+            2) Launch 2'nd Instances --> Name:- new-instance
+                                         Create key name:- recover-key
+                                         By default setting allow SSH and HTTP.
+                                         Launch instance --> Running 
+             3) Open Volume.
+             4) Select 1'st Instance volume [rename it:- old-instance].
+             5) Action  --> Detach volume  --> Detach.
+             6) Select 1st Volume --> Action --> Attach Volume --> Instance:- new-instance (ID) --> Attach Volume.
+             7) Open Instances.
+             8) Select 2nd instance [new-instance] --> Copy Public IP of 2nd instances.
+             9) Open Mobaxterm app :-
+                                     Hostname:- Paste Public IP of 2nd Instances.
+                                     Specify username:- ec2-user
+                                     Advanced setting:- Private key: recover-key.pem file select.
+                                     OK
+             10) Open Black screen of Mobaxterm app.
+             11) Commands:- 
+                           # sudo su   --> ctrl+l
+                           # lsblk
+                           # cd /mnt/
+                           # mkdir root-volume
+                           # ls     --> output directory created named as root-volume.
+                           # mount -o nouuid /dev/xvdf1 /mnt/root-volume/
+                           # df -h 
+                           # cd /home/ec2-user/.ssh/
+                           # ls     --> Authorized_keys
+                           # cat authorized_keys >> /mnt/root-volume/home/ec2-user/.ssh/authorized_keys.
+                           # umount /mnt/root-volume/
+                           # df -h 
+             12) Open Instances on Chrome --> new-instance stopped it --> Stopped.
+             13) Open Volume.
+             14) Select old-instances volume.
+             15) Action  --> Detach volume  --> Detach.
+             16) Select 1st old-instance Volume --> Action --> Attach Volume --> Instance:- old-instance (ID)
+                                                                             --> Device name:- /dev/xvda 
+                                                                             --> Attach Volume.
+             17) Open Instances.
+             18) Select 1st instance [old-instance] --> Start It --> Copy Public IP of 1st instances.
+             19) Open Mobaxterm app :-
+                                     Hostname:- Paste Public IP of 1st Instances.
+                                     Specify username:- ec2-user
+                                     Advanced setting:- Private key: recover-key.pem file select.
+                                     OK
+             20) Open Black Screen of Mobaxterm app.
+             21) Checked Private IP is matching with EC2 Old-instance whose key is lost on AWS console.
+             22) Hence, We have Login with Old-instance whose key is lost with the help of Recover-key and lost-key is deleted from Files.
+             
